@@ -11,123 +11,140 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useMemo } from "react";
+import React from "react";
 
-const FormElementContainer = ({ config, formik }) => {
+const FormElementContainer = ({ config, formik, optionsDetails }) => {
   const builder = (individualConfig) => {
     switch (individualConfig.screenElement) {
       case "TextBox":
+        let idTextBox = individualConfig.id;
         return (
-          <>
-            <div>
-              <InputLabel htmlFor="bootstrap-input">
-                {individualConfig.label}
-              </InputLabel>
-              <TextField
-                id={individualConfig.id}
-                fullWidth
-                placeholder={"Enter " + individualConfig.label}
-                variant="outlined"
-              />
-            </div>
-          </>
+          <div>
+            <InputLabel htmlFor="bootstrap-input">
+              {individualConfig.label}
+            </InputLabel>
+            <TextField
+              id={idTextBox}
+              fullWidth
+              placeholder={"Enter " + individualConfig.label}
+              variant="outlined"
+              onChange={formik.handleChange}
+            // value={formik.values.idTextBox}
+            />
+          </div>
         );
       case "TextArea":
+        let idTextArea = individualConfig.id;
         return (
-          <>
-            <div>
-              <InputLabel htmlFor="bootstrap-input">
-                {individualConfig.label}
-              </InputLabel>
-              <TextField
-                id={individualConfig.id}
-                multiline
-                fullWidth
-                placeholder={"Enter " + individualConfig.label}
-                variant="outlined"
-                rows={2}
-              />
-            </div>
-          </>
+          <div>
+            <InputLabel htmlFor="bootstrap-input">
+              {individualConfig.label}
+            </InputLabel>
+            <TextField
+              id={idTextArea}
+              multiline
+              fullWidth
+              placeholder={"Enter " + individualConfig.label}
+              variant="outlined"
+              rows={2}
+              onChange={formik.handleChange}
+              value={formik.values.idTextArea}
+            />
+          </div>
         );
       case "DropDown":
+        let idDropDown = individualConfig.id;
         return (
           <>
             <InputLabel htmlFor="bootstrap-input">
               {individualConfig.label}
             </InputLabel>
             <Select
-              // onChange={}
+              //value={formik.values.idDropDown}
+              id={idDropDown}
+              name={individualConfig.name}
+              onChange={formik.handleChange}
               fullWidth
-              inputProps={{ "aria-label": "Without label" }}
+            // inputProps={{ "aria-label": "Without label" }}
             >
-              <MenuItem key={"first"} disabled>
-                <em>{individualConfig.label}</em>
-              </MenuItem>
-              {individualConfig.option.map((item, index) => {
-                return (
-                  <MenuItem key={index} value={item.value}>
-                    {item.label}
-                  </MenuItem>
-                );
-              })}
+              
+              {optionsDetails.map((item, i) => {
+                if (individualConfig.screenElement === item.screenElement && idDropDown === item.id) {
+                  return item.option.map((data, index) => {
+                    return (
+
+                      <MenuItem key={index} value={data.value}>
+                        {data.label}
+                      </MenuItem>
+                    );
+                  })
+                }
+              })
+              }
             </Select>
           </>
         );
       case "CheckBox":
+        let idCheckBox = individualConfig.id;
         return (
           <>
             <FormControl component="fieldset" fullWidth>
               <FormLabel component="legend">{individualConfig.label}</FormLabel>
-              <FormGroup aria-label="position" row>
-                {individualConfig.option.map((item, index) => {
-                  return (
-                    <FormControlLabel
-                      key={index}
-                      value="end"
-                      control={
-                        <Checkbox
-                          checked={
-                            item.default_checked === "Yes" ? true : false
-                          }
+              <FormGroup aria-label="position" row
+                name="radio_name"                
+              >
+                {optionsDetails.map((item, i) => {
+                  if (individualConfig.screenElement === item.screenElement && idCheckBox === item.id) {
+                    return item.option.map((data, index) => {
+                      return (
+                        <FormControlLabel
+                          key={index}                          
+                          control={<Checkbox name={data.label} onChange={formik.handleChange}/>}
+                          label={data.label}
+                          labelPlacement="end"
                         />
-                      }
-                      label={item.label}
-                      labelPlacement="end"
-                    />
-                  );
-                })}
+                      );
+                    })
+                  }
+                })
+                }
               </FormGroup>
             </FormControl>
           </>
         );
       case "Radio":
-        let selectedRadioValue = "";
-        let selectedRadioItem = individualConfig.option.filter(
-          (item) => item.default_checked === "Yes"
-        );
-        if (selectedRadioItem[0])
-          selectedRadioValue = selectedRadioItem[0].value;
+        let idRadio = individualConfig.id;
+        // let selectedRadioValue = "";
+        // let selectedRadioItem = individualConfig.option.filter(
+        //   (item) => item.default_checked === "Yes"
+        // );
+        // if (selectedRadioItem[0])
+        //   selectedRadioValue = selectedRadioItem[0].value;
         return (
           <>
             <FormControl>
               <FormLabel>{individualConfig.label}</FormLabel>
               <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
                 name="radio-buttons-group"
-                value={selectedRadioValue}
               >
-                {individualConfig.option.map((item, index) => {
-                  return (
-                    <FormControlLabel
-                      key={index}
-                      value={item.value}
-                      control={<Radio />}
-                      label={item.label}
-                    />
-                  );
-                })}
+                {optionsDetails.map((item, i) => {
+                  if (individualConfig.screenElement === item.screenElement && idRadio === item.id) {
+                    return item.option.map((data, index) => {
+                      return (
+                        <FormControlLabel
+                          value={data.value}
+                          key={index}
+                          name={data.label}
+                          control={<Radio />}
+                          label={data.label}
+                          onChange={formik.handleChange}
+                        />
+                      );
+                    })
+                  }
+                })
+                }
               </RadioGroup>
             </FormControl>
           </>

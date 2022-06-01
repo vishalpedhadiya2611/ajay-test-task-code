@@ -28,6 +28,12 @@
         "screenElement": "DropDown",
         "isRequired": "Yes",
         "validationMessage": "Please select connection."
+        ,
+        "option": [
+          { "label": "Connection 1", "value": 1, "id": 1 },
+          { "label": "Connection 2", "value": 2, "id": 2 },
+          { "label": "Connection 3", "value": 3, "id": 3 }
+        ]
       },
       {
         "id": "active_connection",
